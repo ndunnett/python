@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Generate tag
-        run: echo "TAG=${{ matrix.ubuntu }}-$(cut -d '.' -f 1,2 <<< "${{ matrix.python }}")" >> "$GITHUB_ENV"
+        run: echo "TAG=${{ matrix.ubuntu }}-$(echo ${{ matrix.python }} | cut -d '.' -f 1,2)" >> "$GITHUB_ENV"
 
       - name: Build unflattened image
         run: |
@@ -49,7 +49,7 @@ jobs:
           set -eux
           docker push "$REPO:$TAG-unflattened"
           docker push "$REPO:$TAG"
-          if [ "$TAG" -eq "$LATEST_TAG" ]; then
+          if [ "$TAG" = "$LATEST_TAG" ]; then
             docker manifest create "$REPO:latest" "$REPO:$TAG"
             docker manifest push "$REPO:latest"
           fi
