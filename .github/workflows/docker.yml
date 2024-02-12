@@ -23,10 +23,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Generate tag
-        id: gen-tag
-        run: |
-          TAG="${{ matrix.ubuntu }}-$(cut -d '.' -f 1,2 <<< "${{ matrix.python }}")"
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+        run: echo "TAG=${{ matrix.ubuntu }}-$(cut -d '.' -f 1,2 <<< "${{ matrix.python }}")" >> "$GITHUB_ENV"
 
       - name: Build unflattened image
         run: |
@@ -34,8 +31,6 @@ jobs:
           docker build . --tag "$REPO:$TAG-unflattened" \
             --build-arg "PYTHON_VERSION=${{ matrix.python }}" \
             --build-arg "UBUNTU_TAG=${{ matrix.ubuntu }}"
-        env:
-          TAG: ${{ steps.gen-tag.outputs.tag }}
 
       - name: Flatten image
         run: |
@@ -43,8 +38,6 @@ jobs:
           docker run --name "ndunnett-python-$TAG" "$REPO:$TAG-unflattened"
           docker export "ndunnett-python-$TAG" | docker import - "$REPO:$TAG"
           docker stop "ndunnett-python-$TAG" && docker remove "ndunnett-python-$TAG"
-        env:
-          TAG: ${{ steps.gen-tag.outputs.tag }}
 
       - uses: docker/login-action@v3
         with:
@@ -60,5 +53,3 @@ jobs:
             docker manifest create $REPO:$LATEST_TAG $REPO:$TAG
             docker manifest push $REPO:$LATEST_TAG
           fi
-        env:
-          TAG: ${{ steps.gen-tag.outputs.tag }}
