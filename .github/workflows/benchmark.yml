@@ -51,7 +51,7 @@ jobs:
       run: echo "$(pyperformance compare results/official.json results/ndunnett.json --output_style table)" >> benchmark-comparison.txt
 
     - name: Process PyPerformance output into Markdown
-      run: python3 format_benchmark.py benchmark.txt
+      run: python3 format_benchmark.py benchmark-comparison.txt
 
     - name: Commit and push benchmark comparsion
       run: |
