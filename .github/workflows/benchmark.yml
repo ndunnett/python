@@ -1,0 +1,60 @@
+---
+name: Benchmark Python Performance
+
+on: workflow_dispatch
+
+jobs:
+  benchmark:
+    name: Run benchmark for ${{ matrix.image }}
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.image }}
+    strategy:
+      matrix:
+        include:
+          - image: ndunnett/python:latest
+            name: ndunnett
+          - image: python:latest
+            name: official
+    steps:
+
+    - name: Install PyPerformance
+      run: python -m pip install pyperformance
+
+    - name: Run benchmark
+      run: pyperformance run --benchmarks deepcopy --output ${{ matrix.name }}.json --debug-single-value
+
+    - name: Upload benchmark results
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.name }}-result
+        path: ${{ matrix.name }}.json
+
+  compare:
+    name: Compare benchmark results
+    runs-on: ubuntu-latest
+    needs: benchmark
+    steps:
+
+    - uses: actions/checkout@v4
+
+    - name: Download benchmark results
+      uses: actions/download-artifact@v4
+      with:
+        path: results
+        merge-multiple: true
+
+    - name: Install PyPerformance
+      run: python -m pip install pyperformance
+
+    - name: Run comparison
+      run: echo "$(pyperformance compare results/official.json results/ndunnett.json --output_style table)" >> benchmark-comparison.txt
+
+    - name: Process PyPerformance output into Markdown
+      run: python3 format_benchmark.py benchmark.txt
+
+    - name: Commit and push benchmark comparsion
+      run: |
+        git config --global user.email "benchmark-bot@example.com"
+        git config --global user.name "benchmark-bot"
+        git add BENCHMARK.md && git commit -m "Updated benchmark" && git push
