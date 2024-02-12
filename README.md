@@ -1,0 +1,1 @@
+Based on the official ubuntu image with Python 3.12.2 compiled from source. Approx 20% better performance than the official Python image. Compiled using clang-18 as that offers a small performance advantage over using the gcc compiler.

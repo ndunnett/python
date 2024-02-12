@@ -1,0 +1,46 @@
+name: ci
+on: push
+
+env:
+  LATEST_UBUNTU: "jammy"
+  LATEST_PYTHON: "3.12.2"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ubuntu: ["jammy"]
+        python: ["3.13.0a3", "3.12.2", "3.11.8", "3.10.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build images and push to Docker Hub
+        run: |
+          set -eux
+          repo="ndunnett/python"
+          tag="${{ matrix.ubuntu }}-$(cut -d '.' -f 1,2 <<< "${{ matrix.python }}")"
+          latest_tag="$LATEST_UBUNTU-$(cut -d '.' -f 1,2 <<< "$LATEST_PYTHON")"
+
+          # build and push unflattened image
+          docker build . --tag "$repo:$tag-unflattened" \
+            --build-arg "PYTHON_VERSION=${{ matrix.python }}" \
+            --build-arg "UBUNTU_TAG=${{ matrix.ubuntu }}"
+          docker push "$repo:$tag-unflattened"
+
+          # flatten image
+          docker run --name "ndunnett-python-$tag" "$repo:$tag-unflattened"
+          docker export "ndunnett-python-$tag" | docker import - "$repo:$tag"
+          docker stop "ndunnett-python-$tag" && docker remove "ndunnett-python-$tag"
+
+          # add latest tag if applicable
+          if [ "$tag" -eq "$latest_tag" ]; then
+            docker manifest create $repo:$latest_tag $repo:$tag
+            docker manifest push $repo:$latest_tag
+          fi
+
+          # push flattened image
+          docker push "$repo:$tag"
