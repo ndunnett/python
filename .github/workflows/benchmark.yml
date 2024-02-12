@@ -45,10 +45,16 @@ jobs:
         merge-multiple: true
 
     - name: Install PyPerformance
-      run: python -m pip install pyperformance
+      run: python3 -m pip install pyperformance
 
     - name: Run comparison
-      run: echo "$(pyperformance compare results/official.json results/ndunnett.json --output_style table)" >> benchmark-comparison.txt
+      run: echo "$(pyperformance compare results/official.json results/ndunnett.json --output_style table)" > benchmark-comparison.txt
+
+    - name: Upload raw comparison
+      uses: actions/upload-artifact@v4
+      with:
+        name: benchmark-comparison
+        path: benchmark-comparison.txt
 
     - name: Process PyPerformance output into Markdown
       run: python3 format_benchmark.py benchmark-comparison.txt
