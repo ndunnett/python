@@ -50,6 +50,6 @@ jobs:
           docker push "$REPO:$TAG-unflattened"
           docker push "$REPO:$TAG"
           if [ "$TAG" -eq "$LATEST_TAG" ]; then
-            docker manifest create $REPO:$LATEST_TAG $REPO:$TAG
-            docker manifest push $REPO:$LATEST_TAG
+            docker manifest create "$REPO:latest" "$REPO:$TAG"
+            docker manifest push "$REPO:latest"
           fi
