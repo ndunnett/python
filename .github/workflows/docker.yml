@@ -25,7 +25,7 @@ jobs:
       - name: Generate tag
         id: gen-tag
         run: |
-          tag="${{ matrix.ubuntu }}-$(cut -d '.' -f 1,2 <<< "${{ matrix.python }}")"
+          TAG="${{ matrix.ubuntu }}-$(cut -d '.' -f 1,2 <<< "${{ matrix.python }}")"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
       - name: Build unflattened image
