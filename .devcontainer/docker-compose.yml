@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  python_dev:
+    build:
+      context: ..
+      target: non_root
+    volumes:
+      - ..:/home/dev/repo

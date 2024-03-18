@@ -1,0 +1,14 @@
+{
+  "dockerComposeFile": "./docker-compose.yml",
+  "service": "python_dev",
+  "workspaceFolder": "/home/dev/repo",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.autopep8",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  }
+}
