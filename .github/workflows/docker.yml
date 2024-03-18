@@ -16,21 +16,25 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ubuntu: ["jammy"]
-        python: ["3.13.0a3", "3.12.2", "3.11.8", "3.10.13"]
+        python: ["3.13.0a5", "3.12.2", "3.11.8", "3.10.13"]
+        base_image: ["ubuntu"]
+        base_image_tag: ["jammy"]
+        llvm_version: ["18"]
     steps:
 
       - uses: actions/checkout@v4
 
       - name: Generate tag
-        run: echo "TAG=${{ matrix.ubuntu }}-$(echo ${{ matrix.python }} | cut -d '.' -f 1,2)" >> "$GITHUB_ENV"
+        run: echo "TAG=${{ matrix.base_image_tag }}-$(echo ${{ matrix.python }} | cut -d '.' -f 1,2)" >> "$GITHUB_ENV"
 
       - name: Build unflattened image
         run: |
           set -eux
           docker build . --tag "$REPO:$TAG-unflattened" \
             --build-arg "PYTHON_VERSION=${{ matrix.python }}" \
-            --build-arg "UBUNTU_TAG=${{ matrix.ubuntu }}"
+            --build-arg "BASE_IMAGE=${{ matrix.base_image }}" \
+            --build-arg "BASE_IMAGE_TAG=${{ matrix.base_image_tag }}" \
+            --build-arg "LLVM_VERSION=${{ matrix.llvm_version }}"
 
       - name: Flatten image
         run: |
