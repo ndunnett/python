@@ -17,7 +17,8 @@ RUN set -eux; \
     apt-get dist-upgrade -y; \
     apt-get upgrade -y; \
     apt-get install -y --no-install-recommends \
-    build-essential checkinstall software-properties-common gnupg wget ca-certificates pkg-config
+    software-properties-common gnupg wget ca-certificates \
+    build-essential checkinstall pkg-config gdb lcov pkg-config lzma
 
 # download python source
 ARG PYTHON_VERSION
@@ -26,11 +27,6 @@ RUN set -eux; \
     PYTHON_URL="https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-${PYTHON_VERSION}.tgz"; \
     wget -qO - "${PYTHON_URL}" | tar -xz -C /tmp; \
     mv "/tmp/Python-${PYTHON_VERSION}" "$PYTHON_BUILD_DIR"
-
-# install llvm
-ARG LLVM_VERSION
-RUN set -eux; \
-    wget -qO - https://apt.llvm.org/llvm.sh | bash -s "${LLVM_VERSION}" all
 
 # run build-dep for python
 RUN set -eux; \
@@ -42,17 +38,14 @@ RUN set -eux; \
 # install additional header libraries
 RUN set -eux; \
     apt-get install -y --no-install-recommends \
-    libffi-dev zlib1g-dev libsqlite3-dev libssl-dev
+    libffi-dev zlib1g-dev libsqlite3-dev libssl-dev \
+    libbz2-dev libgdbm-dev libgdbm-compat-dev liblzma-dev \
+    libncurses5-dev libreadline6-dev lzma-dev tk-dev uuid-dev
 
 # configure python
 RUN set -eux; \
     cd "$PYTHON_BUILD_DIR"; \
     ./configure \
-    CC="$(which "clang-$LLVM_VERSION")" \
-    CXX="$(which "clang++-$LLVM_VERSION")" \
-    LLVM_PROFDATA="$(which "llvm-profdata-$LLVM_VERSION")" \
-    LLVM_AR="$(which "llvm-ar-$LLVM_VERSION")" \
-    CFLAGS="-Wno-unused-value -Wno-empty-body -Qunused-arguments -Wno-parentheses-equality" \
     --enable-loadable-sqlite-extensions \
     --with-computed-gotos \
     --enable-optimizations \
@@ -92,7 +85,9 @@ RUN set -eux; \
     # install dependencies
     DEBIAN_FRONTEND="noninteractive" \
     apt-get install -y --no-install-recommends \
-    wget ca-certificates libffi-dev zlib1g-dev libsqlite3-dev libssl-dev; \
+    wget ca-certificates libffi-dev zlib1g-dev libsqlite3-dev libssl-dev \
+    libbz2-dev libgdbm-dev libgdbm-compat-dev liblzma-dev \
+    libncurses5-dev libreadline6-dev lzma-dev tk-dev uuid-dev; \
     # install python build
     dpkg -i python-pkg.deb; \
     ln -s "/usr/local/bin/python3" "/usr/local/bin/python"; \
@@ -110,5 +105,27 @@ RUN set -eux; \
     rm -rf /root/.cache/*; \
     rm -rf /tmp/*
 
+
+FROM intermediate AS non_root
+
+# install basic tools
+RUN set -eux; \
+    apt-get update; \
+    DEBIAN_FRONTEND="noninteractive" \
+    apt-get install -y --no-install-recommends wget zsh git; \
+    rm -rf /var/lib/apt/lists/*
+
+# create user
+ARG USERNAME=dev
+RUN set -eux; \
+    useradd --create-home --user-group --no-log-init "$USERNAME"; \
+    mkdir -p "/home/$USERNAME"; \
+    chown -R "$USERNAME:$USERNAME" "/home/$USERNAME"
+WORKDIR "/home/$USERNAME"
+USER "$USERNAME"
+ENV PATH="/home/$USERNAME/.local/bin:$PATH"
+
+# entrypoint
+CMD ["sleep", "infinity"]
 
 FROM intermediate AS final
