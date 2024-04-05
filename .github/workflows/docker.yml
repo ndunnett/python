@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ["3.13.0a5", "3.12.2", "3.11.8", "3.10.13"]
+        python: ["3.13.0a5", "3.12.2", "3.11.9", "3.10.14"]
         base_image: ["ubuntu"]
         base_image_tag: ["jammy"]
         llvm_version: ["18"]
