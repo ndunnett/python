@@ -19,7 +19,6 @@ jobs:
         python: ["3.13.0a5", "3.12.2", "3.11.9", "3.10.14"]
         base_image: ["ubuntu"]
         base_image_tag: ["jammy"]
-        llvm_version: ["18"]
     steps:
 
       - uses: actions/checkout@v4
@@ -27,21 +26,13 @@ jobs:
       - name: Generate tag
         run: echo "TAG=${{ matrix.base_image_tag }}-$(echo ${{ matrix.python }} | cut -d '.' -f 1,2)" >> "$GITHUB_ENV"
 
-      - name: Build unflattened image
+      - name: Build image
         run: |
           set -eux
-          docker build . --tag "$REPO:$TAG-unflattened" \
+          docker build . --tag "$REPO:$TAG" \
             --build-arg "PYTHON_VERSION=${{ matrix.python }}" \
             --build-arg "BASE_IMAGE=${{ matrix.base_image }}" \
             --build-arg "BASE_IMAGE_TAG=${{ matrix.base_image_tag }}" \
-            --build-arg "LLVM_VERSION=${{ matrix.llvm_version }}"
-
-      - name: Flatten image
-        run: |
-          set -eux
-          docker run --name "ndunnett-python-$TAG" "$REPO:$TAG-unflattened"
-          docker export "ndunnett-python-$TAG" | docker import - "$REPO:$TAG"
-          docker stop "ndunnett-python-$TAG" && docker remove "ndunnett-python-$TAG"
 
       - uses: docker/login-action@v3
         with:
@@ -51,7 +42,6 @@ jobs:
       - name: Push and tag images
         run: |
           set -eux
-          docker push "$REPO:$TAG-unflattened"
           docker push "$REPO:$TAG"
           if [ "$TAG" = "$LATEST_TAG" ]; then
             docker manifest create "$REPO:latest" "$REPO:$TAG"
