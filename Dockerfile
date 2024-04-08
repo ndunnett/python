@@ -15,11 +15,8 @@ ENV PYTHONUNBUFFERED=1
 ENV PATH="$PYTHON_PREFIX/bin:$PATH"
 
 RUN set -eux; \
-    apt-get update; \
-    # update ubuntu
-    apt-get dist-upgrade -y; \
-    apt-get upgrade -y; \
     # install dependencies
+    apt-get update; \
     DEBIAN_FRONTEND="noninteractive" \
     apt-get install -y --no-install-recommends \
     gcc gdb make wget ca-certificates \
