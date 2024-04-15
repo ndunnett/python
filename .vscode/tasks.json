@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "install pyperformance and run debug dulwich_log",
+            "type": "shell",
+            "command": "pip install pyperformance; pyperformance run --debug-single-value -b dulwich_log"
+        },
+        {
+            "label": "install pyperformance and run debug all benchmarks",
+            "type": "shell",
+            "command": "pip install pyperformance; pyperformance run --debug-single-value"
+        }
+    ]
+}
