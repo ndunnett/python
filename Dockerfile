@@ -9,13 +9,30 @@ ARG PYTHONDONTWRITEBYTECODE=1
 FROM ${BASE_IMAGE}:${BASE_IMAGE_TAG} AS base
 ARG DEBIAN_FRONTEND
 
-# update base image
 RUN set -eux; \
+    # update base image
     apt update; \
     apt full-upgrade -y; \
+    # install common dependencies
+    apt install -y --no-install-recommends \
+    build-essential ca-certificates sqlite3 rdfind; \
+    # find and remove redundant files
+    rdfind -makehardlinks true -makeresultsfile false \
+    /etc /usr /var; \
+    # set default compilers
+    update-alternatives --install /usr/bin/cc cc /usr/bin/gcc 100; \
+    update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++ 100; \
+    # clean up
+    apt remove -y rdfind; \
     apt autoremove -y; \
     apt clean; \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /root; \
+    rm -rf /var/cache/*; \
+    rm -rf /var/lib/apt/lists/*; \
+    rm -rf /var/lib/dpkg/status-old; \
+    rm -rf /var/log/*
+
+ENV PATH="$PYTHON_PREFIX/bin:$PATH"
 
 
 FROM base AS builder
@@ -24,19 +41,13 @@ ARG PYTHON_VERSION
 ARG DEBIAN_FRONTEND
 ARG PYTHONDONTWRITEBYTECODE
 
-ENV PATH="$PYTHON_PREFIX/bin:$PATH"
-
 # install dependencies
 RUN set -eux; \
     apt update; \
-    apt install -y gcc-12 wget ca-certificates sqlite3 \
+    apt install -y wget rdfind \
     libffi-dev zlib1g-dev libsqlite3-dev libssl-dev \
     libbz2-dev libgdbm-dev libgdbm-compat-dev liblzma-dev \
     libncurses5-dev libreadline6-dev lzma-dev tk-dev uuid-dev
-
-# set default C compiler
-RUN set -eux; \
-    update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-12 100
 
 # download python source
 RUN set -eux; \
@@ -68,40 +79,26 @@ RUN set -eux; \
 RUN set -eux; \
     wget -qO - https://bootstrap.pypa.io/get-pip.py | python3
 
-# remove __pycache__ directories from build
+# remove __pycache__ directories and redundant files from build
 RUN set -eux; \
-    cd "$PYTHON_PREFIX"; \
-    rm -rf `find . -type d -name __pycache__`
-
-
-FROM base AS built
-ARG PYTHON_PREFIX
-ARG DEBIAN_FRONTEND
-
-# stops python stdout/stderr from being buffered
-ENV PYTHONUNBUFFERED=1
-ENV PATH="$PYTHON_PREFIX/bin:$PATH"
-
-# install dependencies
-RUN set -eux; \
-    apt update; \
-    apt install -y --no-install-recommends \
-    gcc libc6-dev ca-certificates sqlite3; \
-    apt autoremove -y; \
-    apt clean; \
-    rm -rf /var/lib/apt/lists/*; \
-    rm -rf /var/cache/*; \
-    rm -rf /var/log/*; \
-    rm -rf /root
-
-# copy python build
-COPY --from=builder "$PYTHON_PREFIX" "$PYTHON_PREFIX"
+    rdfind -makehardlinks true -makeresultsfile false "$PYTHON_PREFIX"; \
+    find "$PYTHON_PREFIX" -type d -name __pycache__ -prune -exec rm -rf {} \;
 
 # make symlinks for python
 RUN set -eux; \
     for ex in idle3 pydoc3 python3 python3-config; do \
     src="$PYTHON_PREFIX/bin/$ex"; dst="$(echo "$src" | tr -d 3)"; \
     [ -s "$src" ] && [ ! -e "$dst" ] && ln -svT "$src" "$dst"; done
+
+
+FROM base AS built
+ARG PYTHON_PREFIX
+
+# stops python stdout/stderr from being buffered
+ENV PYTHONUNBUFFERED=1
+
+# copy python build
+COPY --from=builder "$PYTHON_PREFIX" "$PYTHON_PREFIX"
 
 # entrypoint
 CMD ["python"]
