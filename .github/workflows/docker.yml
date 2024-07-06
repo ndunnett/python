@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: discover
-        run: echo "build_matrix=$build_matrix" | tee -a "$GITHUB_OUTPUT"
+        run: echo "build_matrix=$(jq -r '. | tostring' build_matrix.json)" | tee -a "$GITHUB_OUTPUT"
 
   build:
     needs: discover
