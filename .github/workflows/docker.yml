@@ -26,4 +26,5 @@ jobs:
           docker_repo: "ndunnett/python"
           base_image_repo: ${{ matrix.base_image_repo }}
           base_image_tag: ${{ matrix.base_image_tag }}
+          python_version: ${{ matrix.python_version }}
           latest_tag: "noble-3.12"
