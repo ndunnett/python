@@ -40,7 +40,7 @@ def generate_matrix_line(base_image: dict[str, str], python_version: str, latest
 
     return {
         "tag": tag,
-        "aliases": sorted(aliases),
+        "aliases": " ".join(sorted(aliases)),
         "base_image_repo": base_repo,
         "base_image_tag": base_tag,
         "python_version": patch_version,
