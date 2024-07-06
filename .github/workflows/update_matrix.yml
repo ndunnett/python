@@ -11,7 +11,7 @@ on:
     - cron: "0 8 * * 0"
 
 jobs:
-  benchmark:
+  update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,4 +23,4 @@ jobs:
         run: |
           git config --global user.email "matrix-bot@example.com"
           git config --global user.name "matrix-bot"
-          git commit -am "Updated build_matrix.json" && git push
+          git commit -am "Updated build_matrix.json" && git push || exit 0

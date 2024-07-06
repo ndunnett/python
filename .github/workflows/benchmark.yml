@@ -64,4 +64,4 @@ jobs:
       run: |
         git config --global user.email "benchmark-bot@example.com"
         git config --global user.name "benchmark-bot"
-        git add BENCHMARK.md && git commit -m "Updated BENCHMARK.md" && git push
+        git commit -am "Updated BENCHMARK.md" && git push || exit 0
