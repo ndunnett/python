@@ -1,5 +1,5 @@
 ---
-name: Docker Image CI
+name: Build All
 
 on:
   workflow_dispatch:
@@ -26,7 +26,8 @@ jobs:
       matrix: ${{ fromJSON(needs.discover.outputs.build_matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/build
+      - name: Build image and push to Docker Hub
+        uses: ./.github/actions/build
         with:
           docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
           docker_token: ${{ secrets.DOCKERHUB_TOKEN }}
