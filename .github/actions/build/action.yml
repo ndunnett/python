@@ -31,7 +31,7 @@ inputs:
     required: true
 
 runs:
-  using: "composite"
+  using: composite
   steps:
     - uses: actions/checkout@v4
     - uses: docker/login-action@v3
@@ -41,16 +41,21 @@ runs:
     - shell: bash
       run: |
         set -eux
-        tag=${{ inputs.base_image_tag }}-$(echo ${{ inputs.python_version }} | cut -d '.' -f 1,2)
+        tag_patch="${{ inputs.base_image_tag }}-${{ inputs.python_version }}"
+        tag_minor="${{ inputs.base_image_tag }}-$(echo ${{ inputs.python_version }} | cut -d '.' -f 1,2)"
 
-        docker build . --tag "${{ inputs.docker_repo }}:$tag" \
-          --build-arg "PYTHON_VERSION=${{ inputs.python_version }}" \
-          --build-arg "BASE_IMAGE=${{ inputs.base_image_repo }}" \
-          --build-arg "BASE_IMAGE_TAG=${{ inputs.base_image_tag }}" \
+        echo "$tag_patch"
 
-        docker push "${{ inputs.docker_repo }}:$tag"
+        # docker build . --tag "${{ inputs.docker_repo }}:$tag_patch" \
+        #   --build-arg "PYTHON_VERSION=${{ inputs.python_version }}" \
+        #   --build-arg "BASE_IMAGE=${{ inputs.base_image_repo }}" \
+        #   --build-arg "BASE_IMAGE_TAG=${{ inputs.base_image_tag }}" \
 
-        if [ "$tag" = "${{ inputs.latest_tag }}" ]; then
-          docker manifest create "${{ inputs.docker_repo }}:latest" "${{ inputs.docker_repo }}:$tag"
-          docker manifest push "${{ inputs.docker_repo }}:latest"
-        fi
+        # docker push "${{ inputs.docker_repo }}:$tag_patch"
+        # docker manifest create "${{ inputs.docker_repo }}:$tag_minor" "${{ inputs.docker_repo }}:$tag_patch"
+        # docker manifest push "${{ inputs.docker_repo }}:$tag_minor"
+
+        # if [ "$tag_minor" = "${{ inputs.latest_tag }}" ]; then
+        #   docker manifest create "${{ inputs.docker_repo }}:latest" "${{ inputs.docker_repo }}:$tag_patch"
+        #   docker manifest push "${{ inputs.docker_repo }}:latest"
+        # fi

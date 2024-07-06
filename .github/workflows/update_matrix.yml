@@ -1,0 +1,21 @@
+---
+name: Update Build Matrix
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - Dockerfile
+      - variants.json
+  schedule:
+    - cron: "0 8 * * 0"
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate matrix
+        uses: ./.github/actions/generate_matrix
+        with:
+          variants_file: variants.json
+          matrix_file: build_matrix.json

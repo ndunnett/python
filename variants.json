@@ -1,0 +1,19 @@
+{
+  "python_versions": [
+    "3.13",
+    "3.12",
+    "3.11",
+    "3.10"
+  ],
+  "base_images": [
+    {
+      "repo": "ubuntu",
+      "tag": "jammy"
+    },
+    {
+      "repo": "ubuntu",
+      "tag": "noble"
+    }
+  ],
+  "latest_tag": "noble-3.12"
+}

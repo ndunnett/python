@@ -1,0 +1,22 @@
+name: "Generate matrix"
+description: "Generate full build matrix to define which images are built"
+
+inputs:
+  variants_file:
+    description: "Path to variants json file"
+    required: true
+
+  matrix_file:
+    description: "Path to matrix json file"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+    - shell: bash
+      run: |
+        python3 ./.github/actions/generate_matrix/generate_matrix.py -i ${{ inputs.variants_file }} -o ${{ inputs.matrix_file }}
+        git config --global user.email "matrix-bot@example.com"
+        git config --global user.name "matrix-bot"
+        git commit -am "Updated build_matrix.json" && git push

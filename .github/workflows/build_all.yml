@@ -5,22 +5,27 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "Dockerfile"
-      - "build_matrix.json"
+      - build_matrix.json
 
 jobs:
   discover:
+    name: Discover build matrix from json file
     runs-on: ubuntu-latest
     outputs:
+      latest_tag: ${{ steps.discover.outputs.latest_tag }}
       build_matrix: ${{ steps.discover.outputs.build_matrix }}
     steps:
       - uses: actions/checkout@v4
       - id: discover
-        run: echo "build_matrix=$(jq -r '. | tostring' build_matrix.json)" | tee -a "$GITHUB_OUTPUT"
+        run: |
+          echo "latest_tag=$(jq -r '.["latest_tag"]' variants.json)" | tee -a "$GITHUB_OUTPUT"
+          echo "build_matrix=$(jq -r '. | tostring' build_matrix.json)" | tee -a "$GITHUB_OUTPUT"
 
   build:
+    name: Build and push image (${{ matrix.python_version }}, ${{ matrix.base_image_repo }}, ${{ matrix.base_image_tag }})
     needs: discover
     runs-on: ubuntu-latest
+    continue-on-error: true
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.discover.outputs.build_matrix) }}
@@ -31,8 +36,8 @@ jobs:
         with:
           docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
           docker_token: ${{ secrets.DOCKERHUB_TOKEN }}
-          docker_repo: "ndunnett/python"
+          docker_repo: ndunnett/python
           base_image_repo: ${{ matrix.base_image_repo }}
           base_image_tag: ${{ matrix.base_image_tag }}
           python_version: ${{ matrix.python_version }}
-          latest_tag: ${{ matrix.latest_tag }}
+          latest_tag: ${{ needs.discover.outputs.latest_tag }}
