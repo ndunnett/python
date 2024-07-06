@@ -9,21 +9,22 @@ on:
       - "build_matrix.json"
 
 jobs:
-  generate-matrix:
+  discover:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.generate-matrix.outputs.value }}
+      build_matrix: ${{ steps.discover.outputs.build_matrix }}
     steps:
       - uses: actions/checkout@v4
-      - id: generate-matrix
-        run: echo "value=$(jq '.| tostring' build_matrix.json)" >> $GITHUB_OUTPUT
+      - id: discover
+        run: echo "build_matrix=$(jq '. | tostring' build_matrix.json)" | tee -a "$GITHUB_OUTPUT"
+      - run: echo "$build_matrix"
 
   build:
-    needs: generate-matrix
+    needs: discover
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}
+      matrix: ${{ fromJSON(needs.discover.outputs.build_matrix) }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/build
