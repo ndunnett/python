@@ -15,8 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Generate matrix
-        uses: ./.github/actions/generate_matrix
-        with:
-          variants_file: variants.json
-          matrix_file: build_matrix.json
+        run: python3 ./.github/workflows/scripts/generate_matrix.py -i variants.json -o build_matrix.json
+
+      - name: Commit and push matrix
+        run: |
+          git config --global user.email "matrix-bot@example.com"
+          git config --global user.name "matrix-bot"
+          git commit -am "Updated build_matrix.json" && git push

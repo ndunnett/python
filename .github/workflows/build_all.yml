@@ -9,7 +9,6 @@ on:
 
 jobs:
   discover:
-    name: Discover build matrix from json file
     runs-on: ubuntu-latest
     outputs:
       latest_tag: ${{ steps.discover.outputs.latest_tag }}
@@ -22,7 +21,6 @@ jobs:
           echo "build_matrix=$(jq -r '. | tostring' build_matrix.json)" | tee -a "$GITHUB_OUTPUT"
 
   build:
-    name: Build and push image (${{ matrix.python_version }}, ${{ matrix.base_image_repo }}, ${{ matrix.base_image_tag }})
     needs: discover
     runs-on: ubuntu-latest
     continue-on-error: true
@@ -31,13 +29,32 @@ jobs:
       matrix: ${{ fromJSON(needs.discover.outputs.build_matrix) }}
     steps:
       - uses: actions/checkout@v4
-      - name: Build image and push to Docker Hub
-        uses: ./.github/actions/build
+
+      - uses: docker/login-action@v3
         with:
-          docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
-          docker_token: ${{ secrets.DOCKERHUB_TOKEN }}
-          docker_repo: ndunnett/python
-          base_image_repo: ${{ matrix.base_image_repo }}
-          base_image_tag: ${{ matrix.base_image_tag }}
-          python_version: ${{ matrix.python_version }}
-          latest_tag: ${{ needs.discover.outputs.latest_tag }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push image
+        shell: bash
+        run: |
+          set -eux
+          docker_repo="ndunnett/python"
+          tag_patch="${{ matrix.base_image_tag }}-${{ matrix.python_version }}"
+          tag_minor="${{ matrix.base_image_tag }}-$(echo ${{ matrix.python_version }} | cut -d '.' -f 1,2)"
+
+          echo "$tag_patch"
+
+          # docker build . --tag "$docker_repo:$tag_patch" \
+          #   --build-arg "PYTHON_VERSION=${{ matrix.python_version }}" \
+          #   --build-arg "BASE_IMAGE=${{ matrix.base_image_repo }}" \
+          #   --build-arg "BASE_IMAGE_TAG=${{ matrix.base_image_tag }}" \
+
+          # docker push "$docker_repo:$tag_patch"
+          # docker manifest create "$docker_repo:$tag_minor" "$docker_repo:$tag_patch"
+          # docker manifest push "$docker_repo:$tag_minor"
+
+          # if [ "$tag_minor" = "${{ needs.discover.outputs.latest_tag }}" ]; then
+          #   docker manifest create "$docker_repo:latest" "$docker_repo:$tag_patch"
+          #   docker manifest push "$docker_repo:latest"
+          # fi

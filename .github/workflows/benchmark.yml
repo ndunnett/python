@@ -1,7 +1,8 @@
 ---
 name: Benchmark Python Performance
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
 
 jobs:
   benchmark:
@@ -57,7 +58,7 @@ jobs:
         path: benchmark-comparison.txt
 
     - name: Process PyPerformance output into Markdown
-      run: python3 format_benchmark.py benchmark-comparison.txt
+      run: python3 ./.github/workflows/scripts/format_benchmark.py benchmark-comparison.txt
 
     - name: Commit and push benchmark comparsion
       run: |
