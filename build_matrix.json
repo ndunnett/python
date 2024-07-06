@@ -11,5 +11,7 @@
   "base_image_tag": [
     "noble"
   ],
-  "latest_tag": "noble-3.12"
+  "latest_tag": [
+    "noble-3.12"
+  ]
 }
