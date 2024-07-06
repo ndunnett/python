@@ -11,16 +11,14 @@ jobs:
   discover:
     runs-on: ubuntu-latest
     outputs:
-      latest_tag: ${{ steps.discover.outputs.latest_tag }}
       build_matrix: ${{ steps.discover.outputs.build_matrix }}
     steps:
       - uses: actions/checkout@v4
       - id: discover
-        run: |
-          echo "latest_tag=$(jq -r '.["latest_tag"]' variants.json)" | tee -a "$GITHUB_OUTPUT"
-          echo "build_matrix=$(jq -r '. | tostring' build_matrix.json)" | tee -a "$GITHUB_OUTPUT"
+        run: echo "build_matrix=$(jq -r '. | tostring' build_matrix.json)" | tee -a "$GITHUB_OUTPUT"
 
   build:
+    name: "build (${{ matrix.tag }})"
     needs: discover
     runs-on: ubuntu-latest
     continue-on-error: true
@@ -41,14 +39,13 @@ jobs:
         shell: bash
         run: |
           set -eux
-          echo "${{ matrix.tag }}"
 
-          # docker build . --tag "${{ env.docker_repo }}:${{ matrix.tag }}" \
-          #   --build-arg "PYTHON_VERSION=${{ matrix.python_version }}" \
-          #   --build-arg "BASE_IMAGE=${{ matrix.base_image_repo }}" \
-          #   --build-arg "BASE_IMAGE_TAG=${{ matrix.base_image_tag }}" \
+          docker build . --tag "${{ env.docker_repo }}:${{ matrix.tag }}" \
+            --build-arg "PYTHON_VERSION=${{ matrix.python_version }}" \
+            --build-arg "BASE_IMAGE=${{ matrix.base_image_repo }}" \
+            --build-arg "BASE_IMAGE_TAG=${{ matrix.base_image_tag }}" \
 
-          # docker push "${{ env.docker_repo }}:${{ matrix.tag }}"
+          docker push "${{ env.docker_repo }}:${{ matrix.tag }}"
 
       - name: Push alias tags
         shell: bash
@@ -56,7 +53,6 @@ jobs:
           set -eux
 
           for tag_alias in ${{ matrix.aliases }}; do
-            echo "$tag_alias"
-            # docker manifest create "${{ env.docker_repo }}:$tag_alias" "${{ env.docker_repo }}:${{ matrix.tag }}"
-            # docker manifest push "${{ env.docker_repo }}:$tag_alias"
+            docker manifest create "${{ env.docker_repo }}:$tag_alias" "${{ env.docker_repo }}:${{ matrix.tag }}"
+            docker manifest push "${{ env.docker_repo }}:$tag_alias"
           done
