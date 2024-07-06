@@ -17,7 +17,9 @@ jobs:
       - uses: actions/checkout@v4
       - id: discover
         run: |
-          echo "build_matrix=\"$(jq -r '. | tostring' build_matrix.json)\"" >> "$GITHUB_OUTPUT"
+          test="{\"python_version\":[\"3.12.4\"],\"base_image_repo\":[\"ubuntu\"],\"base_image_tag\":[\"noble\"],\"latest_tag\":\"noble-3.12\"}"
+          echo "build_matrix=$test" >> "$GITHUB_OUTPUT"
+          # echo "build_matrix=$(jq -r '. | tostring' build_matrix.json)" >> "$GITHUB_OUTPUT"
 
   build:
     needs: discover
