@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: generate-matrix
-        run: echo "value=$(cat build_matrix.json)" >> $GITHUB_OUTPUT
+        run: echo "value=$(jq '.| tostring' build_matrix.json)" >> $GITHUB_OUTPUT
 
   build:
     needs: generate-matrix
