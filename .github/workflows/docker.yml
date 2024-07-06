@@ -7,43 +7,23 @@ on:
     paths:
       - "Dockerfile"
 
-env:
-  LATEST_TAG: "jammy-3.12"
-  REPO: "ndunnett/python"
-
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ["3.13.0a5", "3.12.3", "3.11.9", "3.10.14"]
-        base_image: ["ubuntu"]
-        base_image_tag: ["jammy"]
+        python_version: ["3.13.0b3", "3.12.4", "3.11.9", "3.10.14"]
+        base_image_repo: ["ubuntu"]
+        base_image_tag: ["noble"]
     steps:
 
       - uses: actions/checkout@v4
 
-      - name: Generate tag
-        run: echo "TAG=${{ matrix.base_image_tag }}-$(echo ${{ matrix.python }} | cut -d '.' -f 1,2)" >> "$GITHUB_ENV"
-
-      - name: Build image
-        run: |
-          set -eux
-          docker build . --tag "$REPO:$TAG" \
-            --build-arg "PYTHON_VERSION=${{ matrix.python }}" \
-            --build-arg "BASE_IMAGE=${{ matrix.base_image }}" \
-            --build-arg "BASE_IMAGE_TAG=${{ matrix.base_image_tag }}" \
-
-      - uses: docker/login-action@v3
+      - uses: ./.github/actions/build
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Push and tag images
-        run: |
-          set -eux
-          docker push "$REPO:$TAG"
-          if [ "$TAG" = "$LATEST_TAG" ]; then
-            docker manifest create "$REPO:latest" "$REPO:$TAG"
-            docker manifest push "$REPO:latest"
-          fi
+          docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          docker_token: ${{ secrets.DOCKERHUB_TOKEN }}
+          docker_repo: "ndunnett/python"
+          base_image_repo: ${{ matrix.base_image_repo }}
+          base_image_tag: ${{ matrix.base_image_tag }}
+          latest_tag: "noble-3.12"
