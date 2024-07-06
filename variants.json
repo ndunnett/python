@@ -15,5 +15,8 @@
       "tag": "noble"
     }
   ],
-  "latest_tag": "noble-3.12"
+  "latest": {
+    "base_tag": "noble",
+    "python_version": "3.12"
+  }
 }

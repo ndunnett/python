@@ -27,6 +27,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.discover.outputs.build_matrix) }}
+    env:
+      docker_repo: ndunnett/python
     steps:
       - uses: actions/checkout@v4
 
@@ -39,22 +41,22 @@ jobs:
         shell: bash
         run: |
           set -eux
-          docker_repo="ndunnett/python"
-          tag_patch="${{ matrix.base_image_tag }}-${{ matrix.python_version }}"
-          tag_minor="${{ matrix.base_image_tag }}-$(echo ${{ matrix.python_version }} | cut -d '.' -f 1,2)"
+          echo "${{ matrix.tag }}"
 
-          echo "$tag_patch"
-
-          # docker build . --tag "$docker_repo:$tag_patch" \
+          # docker build . --tag "${{ env.docker_repo }}:${{ matrix.tag }}" \
           #   --build-arg "PYTHON_VERSION=${{ matrix.python_version }}" \
           #   --build-arg "BASE_IMAGE=${{ matrix.base_image_repo }}" \
           #   --build-arg "BASE_IMAGE_TAG=${{ matrix.base_image_tag }}" \
 
-          # docker push "$docker_repo:$tag_patch"
-          # docker manifest create "$docker_repo:$tag_minor" "$docker_repo:$tag_patch"
-          # docker manifest push "$docker_repo:$tag_minor"
+          # docker push "${{ env.docker_repo }}:${{ matrix.tag }}"
 
-          # if [ "$tag_minor" = "${{ needs.discover.outputs.latest_tag }}" ]; then
-          #   docker manifest create "$docker_repo:latest" "$docker_repo:$tag_patch"
-          #   docker manifest push "$docker_repo:latest"
-          # fi
+      - name: Push alias tags
+        shell: bash
+        run: |
+          set -eux
+
+          for tag_alias in ${{ matrix.aliases }}; do
+            echo "$tag_alias"
+            # docker manifest create "${{ env.docker_repo }}:$tag_alias" "${{ env.docker_repo }}:${{ matrix.tag }}"
+            # docker manifest push "${{ env.docker_repo }}:$tag_alias"
+          done
