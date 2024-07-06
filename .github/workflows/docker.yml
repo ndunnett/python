@@ -8,13 +8,20 @@ on:
       - "Dockerfile"
 
 jobs:
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.generate-matrix.outputs.matrix }}
+    steps:
+      - id: generate-matrix
+        run: echo "::set-output name=matrix::$(cat build_matrix.json)"
+
   build:
+    needs: generate-matrix
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        python_version: ["3.13.0b3", "3.12.4", "3.11.9", "3.10.14"]
-        base_image_repo: ["ubuntu"]
-        base_image_tag: ["noble"]
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}
     steps:
 
       - uses: actions/checkout@v4
@@ -27,4 +34,4 @@ jobs:
           base_image_repo: ${{ matrix.base_image_repo }}
           base_image_tag: ${{ matrix.base_image_tag }}
           python_version: ${{ matrix.python_version }}
-          latest_tag: "noble-3.12"
+          latest_tag: ${{ matrix.latest_tag }}

@@ -45,14 +45,19 @@ runs:
         set -eux
         tag=${{ inputs.base_image_tag }}-$(echo ${{ inputs.python_version }} | cut -d '.' -f 1,2)
 
-        docker build . --tag "${{ inputs.docker_repo }}:$tag" \
-          --build-arg "PYTHON_VERSION=${{ inputs.python_version }}" \
-          --build-arg "BASE_IMAGE=${{ inputs.base_image_repo }}" \
-          --build-arg "BASE_IMAGE_TAG=${{ inputs.base_image_tag }}" \
+        echo "base_image_repo: ${{ inputs.base_image_repo }}"
+        echo "base_image_tag: ${{ inputs.base_image_tag }}"
+        echo "python_version: ${{ inputs.python_version }}"
+        echo "latest_tag: ${{ inputs.latest_tag }}"
 
-        docker push "${{ inputs.docker_repo }}:$tag"
+        # docker build . --tag "${{ inputs.docker_repo }}:$tag" \
+        #   --build-arg "PYTHON_VERSION=${{ inputs.python_version }}" \
+        #   --build-arg "BASE_IMAGE=${{ inputs.base_image_repo }}" \
+        #   --build-arg "BASE_IMAGE_TAG=${{ inputs.base_image_tag }}" \
 
-        if [ "$tag" = "${{ inputs.latest_tag }}" ]; then
-          docker manifest create "${{ inputs.docker_repo }}:latest" "${{ inputs.docker_repo }}:$tag"
-          docker manifest push "${{ inputs.docker_repo }}:latest"
-        fi
+        # docker push "${{ inputs.docker_repo }}:$tag"
+
+        # if [ "$tag" = "${{ inputs.latest_tag }}" ]; then
+        #   docker manifest create "${{ inputs.docker_repo }}:latest" "${{ inputs.docker_repo }}:$tag"
+        #   docker manifest push "${{ inputs.docker_repo }}:latest"
+        # fi
