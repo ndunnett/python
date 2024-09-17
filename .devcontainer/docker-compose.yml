@@ -3,7 +3,11 @@ version: "3.9"
 services:
   python_dev:
     build:
+      args:
+        - BASE_IMAGE=ubuntu
+        - BASE_IMAGE_TAG=noble
+        - PYTHON_VERSION=3.12.6
       context: ..
-      target: non_root
+      target: dev
     volumes:
       - ..:/home/dev/repo

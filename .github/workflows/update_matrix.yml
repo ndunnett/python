@@ -19,7 +19,9 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
 
       - name: Generate matrix
-        run: python3 ./.github/workflows/scripts/generate_matrix.py -i variants.json -o build_matrix.json
+        run: |
+          python3 -m pip install requests
+          python3 ./.github/workflows/scripts/generate_matrix.py -i variants.json -o build_matrix.json
 
       - name: Commit and push matrix
         run: |

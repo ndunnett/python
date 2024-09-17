@@ -10,6 +10,11 @@ FROM ${BASE_IMAGE}:${BASE_IMAGE_TAG} AS base
 ARG DEBIAN_FRONTEND
 
 RUN set -eux; \
+    # delete default user on new ubuntu images
+    grep ubuntu /etc/passwd && \
+    touch /var/mail/ubuntu && \
+    chown ubuntu /var/mail/ubuntu && \
+    userdel -r ubuntu; \
     # update base image
     apt update; \
     apt full-upgrade -y; \
@@ -104,7 +109,7 @@ COPY --from=builder "$PYTHON_PREFIX" "$PYTHON_PREFIX"
 CMD ["python"]
 
 
-FROM built AS non_root
+FROM built AS dev
 ARG DEBIAN_FRONTEND
 
 # install basic tools
@@ -117,10 +122,14 @@ RUN set -eux; \
 ARG USERNAME=dev
 RUN set -eux; \
     useradd --create-home --user-group --no-log-init "$USERNAME"; \
-    mkdir -p "/home/$USERNAME"; \
-    chown -R "$USERNAME:$USERNAME" "/home/$USERNAME"
-WORKDIR "/home/$USERNAME"
+    mkdir -p "/home/$USERNAME/repo"; \
+    chown -R "$USERNAME:$USERNAME" "/home/$USERNAME" "/home/$USERNAME/repo"
+WORKDIR "/home/$USERNAME/repo"
 USER "$USERNAME"
+
+# install python modules
+RUN set -eux; \
+    python -m pip install requests pyperformance
 
 # entrypoint
 CMD ["sleep", "infinity"]

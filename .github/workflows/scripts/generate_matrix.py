@@ -1,13 +1,17 @@
 from argparse import ArgumentParser
 from pathlib import Path
 import json
+import requests
+from functools import cache
 
 
-def get_python_patch(minor_version: str) -> str:
-    """Get the latest patch version for a given minor version of Python."""
-    # todo: navigate python ftp server to determine latest version
-    # https://www.python.org/ftp/python/
-    return {"3.13": "3.13.0b3", "3.12": "3.12.4", "3.11": "3.11.9", "3.10": "3.10.14"}[minor_version]
+@cache
+def get_python_versions() -> dict[str, str]:
+    """Get latest Python minor versions for each major version from GitHub tag names."""
+    endpoint = "https://api.github.com/repos/python/cpython/tags?per_page=200"
+    tags = [tag["name"][1:] for tag in requests.get(endpoint).json()]
+    major_versions = set([tag.rsplit(".", 1)[0] for tag in tags])
+    return {major: next(tag for tag in tags if tag.startswith(major)) for major in major_versions}
 
 
 def parse_base_image(base_image: dict[str, str]) -> tuple[str, str]:
@@ -20,7 +24,7 @@ def parse_base_image(base_image: dict[str, str]) -> tuple[str, str]:
 def generate_matrix_line(base_image: dict[str, str], python_version: str, latest: dict[str, str]) -> dict[str, str]:
     """Transform variant data into matrix include line."""
     base_repo, base_tag = parse_base_image(base_image)
-    patch_version = get_python_patch(python_version)
+    patch_version = get_python_versions()[python_version]
     tag = f"{base_tag}-{patch_version}"
 
     [major_version, minor_num, _] = patch_version.split(".")
