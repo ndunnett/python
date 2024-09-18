@@ -7,7 +7,7 @@ The tag convention is as follows:
 ```{Ubuntu}-{Python}```
 
 - `Ubuntu` - this is the code name for the Ubuntu release
-- `Python` - this is the major version of Python compiled
+- `Python` - this is the version of Python compiled
 
 The `latest` tag is aliased to the image built with the newest available stable release for both Ubuntu and Python.
 
@@ -16,9 +16,6 @@ See [BENCHMARK.md](/BENCHMARK.md) for performance comparison to the official Pyt
 
 ## TODO:
 - Support for `arm64v8` and `arm32v7`
-- Write new action in Python for building/tagging/pushing the images
-- Automate checking for new Python releases
-- Automate checking for updated base images
 - Reduce vulnerabilities highlighted by Docker Scout (if possible)
 - Optimise image size
 - Add more base images (Debian, Alpine)

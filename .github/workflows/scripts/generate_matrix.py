@@ -1,30 +1,43 @@
-from argparse import ArgumentParser
-from pathlib import Path
 import json
-import requests
+from argparse import ArgumentParser
 from functools import cache
+from pathlib import Path
+
+import requests
 
 
 @cache
 def get_python_versions() -> dict[str, str]:
-    """Get latest Python minor versions for each major version from GitHub tag names."""
+    """Get latest Python patch versions for each minor version from GitHub tag names."""
     endpoint = "https://api.github.com/repos/python/cpython/tags?per_page=200"
     tags = [tag["name"][1:] for tag in requests.get(endpoint).json()]
     major_versions = set([tag.rsplit(".", 1)[0] for tag in tags])
     return {major: next(tag for tag in tags if tag.startswith(major)) for major in major_versions}
 
 
-def parse_base_image(base_image: dict[str, str]) -> tuple[str, str]:
-    """Parse base image dict into tuple."""
+def get_python_patch(minor_version: str) -> str:
+    """Get latest Python patch version for the given minor version."""
+    return get_python_versions()[minor_version]
+
+
+@cache
+def get_base_image_digest(repo: str, tag: str) -> str:
+    """Get latest digest for given repo/tag on Docker Hub."""
+    endpoint = f"https://hub.docker.com/v2/namespaces/library/repositories/{repo}/tags/{tag}"
+    return requests.get(endpoint).json()["digest"]
+
+
+def get_base_image_details(base_image: dict[str, str]) -> tuple[str, str, str]:
+    """Parse base image dict into tuple of the repo, tag, and latest digest on Docker Hub."""
     repo, tag = (base_image["repo"], base_image["tag"])
-    # todo: check latest available version of base image
-    return (repo, tag)
+    digest = get_base_image_digest(repo, tag)
+    return (repo, tag, digest)
 
 
 def generate_matrix_line(base_image: dict[str, str], python_version: str, latest: dict[str, str]) -> dict[str, str]:
     """Transform variant data into matrix include line."""
-    base_repo, base_tag = parse_base_image(base_image)
-    patch_version = get_python_versions()[python_version]
+    base_repo, base_tag, digest = get_base_image_details(base_image)
+    patch_version = get_python_patch(python_version)
     tag = f"{base_tag}-{patch_version}"
 
     [major_version, minor_num, _] = patch_version.split(".")
@@ -47,6 +60,7 @@ def generate_matrix_line(base_image: dict[str, str], python_version: str, latest
         "aliases": " ".join(sorted(aliases)),
         "base_image_repo": base_repo,
         "base_image_tag": base_tag,
+        "base_image_digest": digest,
         "python_version": patch_version,
     }
 
