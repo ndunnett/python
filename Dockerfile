@@ -38,6 +38,7 @@ RUN set -eux; \
     rm -rf /var/log/*
 
 ENV PATH="$PYTHON_PREFIX/bin:$PATH"
+ENV LANG=C.UTF-8
 
 
 FROM base AS builder
@@ -49,49 +50,54 @@ ARG PYTHONDONTWRITEBYTECODE
 # install dependencies
 RUN set -eux; \
     apt update; \
-    apt install -y wget rdfind \
-    libffi-dev zlib1g-dev libsqlite3-dev libssl-dev \
-    libbz2-dev libgdbm-dev libgdbm-compat-dev liblzma-dev \
-    libncurses5-dev libreadline6-dev lzma-dev tk-dev uuid-dev
+    apt install -y wget rdfind gnupg \
+        libffi-dev zlib1g-dev libsqlite3-dev libssl-dev libnsl-dev \
+        libbz2-dev libgdbm-dev libgdbm-compat-dev liblzma-dev \
+        libncurses5-dev libreadline6-dev lzma-dev tk-dev uuid-dev
 
-# download python source
+# download and verify python source
 RUN set -eux; \
-    PYTHON_URL="https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tgz"; \
-    wget -qO - "$PYTHON_URL" | tar -xz -C /tmp
+    mkdir -p /tmp/python /root/.gnupg && cd /tmp/python; \
+    PYTHON_URL="https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}"; \
+    TARBALL="Python-$PYTHON_VERSION.tgz"; \
+    # GPG public keys for Pablo Galindo Salgado and Thomas Wouters (release managers for 3.10+)
+    gpg --receive-keys 7169605F62C751356D054A26A821E680E5FA6305; \
+    gpg --receive-keys A035C8C19219BA821ECEA86B64E628F8D684696D; \
+    wget -q "$PYTHON_URL/$TARBALL"; \
+    wget -qO - "$PYTHON_URL/$TARBALL.asc" | gpg --verify - "$TARBALL"; \
+	tar -xz -C /tmp/python -f "$TARBALL" --strip-components=1
 
 # configure python
 RUN set -eux; \
-    cd "/tmp/Python-$PYTHON_VERSION"; \
-    LDFLAGS="-Wl,-rpath=$PYTHON_PREFIX/lib" \
+    cd /tmp/python; \
+    ARCH="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
     ./configure \
-    --enable-loadable-sqlite-extensions \
-    --with-computed-gotos \
-    --enable-optimizations \
-    --with-lto \
-    --without-ensurepip \
-    --without-doc-strings \
-    --enable-option-checking=fatal \
-    --enable-shared \
-    --prefix="$PYTHON_PREFIX"
+        --build="$ARCH" \
+        --enable-loadable-sqlite-extensions \
+        --enable-optimizations \
+        --with-computed-gotos \
+        --with-lto=full \
+        --with-ensurepip=upgrade \
+        --prefix="$PYTHON_PREFIX"
 
 # compile and install python
 RUN set -eux; \
-    cd "/tmp/Python-$PYTHON_VERSION"; \
-    make -s -j "$(nproc)"; \
+    cd /tmp/python; \
+    EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
+    LDFLAGS="$(dpkg-buildflags --get LDFLAGS)"; \
+    make -j "$(nproc)" \
+        "EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
+        "LDFLAGS=${LDFLAGS:-}"; \
     make install
-
-# install pip
-RUN set -eux; \
-    wget -qO - https://bootstrap.pypa.io/get-pip.py | python3
 
 # remove __pycache__ directories and redundant files from build
 RUN set -eux; \
     rdfind -makehardlinks true -makeresultsfile false "$PYTHON_PREFIX"; \
-    find "$PYTHON_PREFIX" -type d -name __pycache__ -prune -exec rm -rf {} \;
+    find "$PYTHON_PREFIX" -type d -name __pycache__ -prune -exec rm -rf {} +
 
 # make symlinks for python
 RUN set -eux; \
-    for ex in idle3 pydoc3 python3 python3-config; do \
+    for ex in idle3 pip3 pydoc3 python3 python3-config; do \
     src="$PYTHON_PREFIX/bin/$ex"; dst="$(echo "$src" | tr -d 3)"; \
     [ -s "$src" ] && [ ! -e "$dst" ] && ln -svT "$src" "$dst"; done
 
