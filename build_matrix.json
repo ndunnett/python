@@ -1,12 +1,12 @@
 {
   "include": [
     {
-      "tag": "jammy-3.13.0rc3",
+      "tag": "jammy-3.13.0",
       "aliases": "jammy-3.13",
       "base_image_repo": "ubuntu",
       "base_image_tag": "jammy",
       "base_image_digest": "sha256:58b87898e82351c6cf9cf5b9f3c20257bb9e2dcf33af051e12ce532d7f94e3fe",
-      "python_version": "3.13.0rc3"
+      "python_version": "3.13.0"
     },
     {
       "tag": "jammy-3.12.7",
@@ -33,19 +33,19 @@
       "python_version": "3.10.15"
     },
     {
-      "tag": "noble-3.13.0rc3",
-      "aliases": "3.13 3.13.0rc3 noble-3.13",
+      "tag": "noble-3.13.0",
+      "aliases": "3.13 3.13.0 noble-3.13",
       "base_image_repo": "ubuntu",
       "base_image_tag": "noble",
-      "base_image_digest": "sha256:b359f1067efa76f37863778f7b6d0e8d911e3ee8efa807ad01fbf5dc1ef9006b",
-      "python_version": "3.13.0rc3"
+      "base_image_digest": "sha256:ab64a8382e935382638764d8719362bb50ee418d944c1f3d26e0c99fae49a345",
+      "python_version": "3.13.0"
     },
     {
       "tag": "noble-3.12.7",
       "aliases": "3 3.12 3.12.7 latest noble-3 noble-3.12",
       "base_image_repo": "ubuntu",
       "base_image_tag": "noble",
-      "base_image_digest": "sha256:b359f1067efa76f37863778f7b6d0e8d911e3ee8efa807ad01fbf5dc1ef9006b",
+      "base_image_digest": "sha256:ab64a8382e935382638764d8719362bb50ee418d944c1f3d26e0c99fae49a345",
       "python_version": "3.12.7"
     },
     {
@@ -53,7 +53,7 @@
       "aliases": "3.11 3.11.10 noble-3.11",
       "base_image_repo": "ubuntu",
       "base_image_tag": "noble",
-      "base_image_digest": "sha256:b359f1067efa76f37863778f7b6d0e8d911e3ee8efa807ad01fbf5dc1ef9006b",
+      "base_image_digest": "sha256:ab64a8382e935382638764d8719362bb50ee418d944c1f3d26e0c99fae49a345",
       "python_version": "3.11.10"
     },
     {
@@ -61,7 +61,7 @@
       "aliases": "3.10 3.10.15 noble-3.10",
       "base_image_repo": "ubuntu",
       "base_image_tag": "noble",
-      "base_image_digest": "sha256:b359f1067efa76f37863778f7b6d0e8d911e3ee8efa807ad01fbf5dc1ef9006b",
+      "base_image_digest": "sha256:ab64a8382e935382638764d8719362bb50ee418d944c1f3d26e0c99fae49a345",
       "python_version": "3.10.15"
     }
   ]
