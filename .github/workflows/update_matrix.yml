@@ -20,8 +20,9 @@ jobs:
 
       - name: Generate matrix
         run: |
-          python3 -m pip install requests
-          python3 ./.github/workflows/scripts/generate_matrix.py -i variants.json -o build_matrix.json
+          python3 -m venv .venv
+          .venv/bin/python3 -m pip install requests
+          .venv/bin/python3 ./.github/workflows/scripts/generate_matrix.py -i variants.json -o build_matrix.json
 
       - name: Commit and push matrix
         run: |
