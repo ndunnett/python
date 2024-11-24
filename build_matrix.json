@@ -1,12 +1,12 @@
 {
   "include": [
     {
-      "tag": "jammy-3.14.0a1",
+      "tag": "jammy-3.14.0a2",
       "aliases": "jammy-3.14",
       "base_image_repo": "ubuntu",
       "base_image_tag": "jammy",
       "base_image_digest": "sha256:0e5e4a57c2499249aafc3b40fcd541e9a456aab7296681a3994d631587203f97",
-      "python_version": "3.14.0a1"
+      "python_version": "3.14.0a2"
     },
     {
       "tag": "jammy-3.13.0",
@@ -41,12 +41,12 @@
       "python_version": "3.10.15"
     },
     {
-      "tag": "noble-3.14.0a1",
-      "aliases": "3.14 3.14.0a1 noble-3.14",
+      "tag": "noble-3.14.0a2",
+      "aliases": "3.14 3.14.0a2 noble-3.14",
       "base_image_repo": "ubuntu",
       "base_image_tag": "noble",
       "base_image_digest": "sha256:278628f08d4979fb9af9ead44277dbc9c92c2465922310916ad0c46ec9999295",
-      "python_version": "3.14.0a1"
+      "python_version": "3.14.0a2"
     },
     {
       "tag": "noble-3.13.0",
