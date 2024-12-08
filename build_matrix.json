@@ -9,76 +9,76 @@
       "python_version": "3.14.0a2"
     },
     {
-      "tag": "jammy-3.13.0",
+      "tag": "jammy-3.13.1",
       "aliases": "jammy-3 jammy-3.13",
       "base_image_repo": "ubuntu",
       "base_image_tag": "jammy",
       "base_image_digest": "sha256:0e5e4a57c2499249aafc3b40fcd541e9a456aab7296681a3994d631587203f97",
-      "python_version": "3.13.0"
+      "python_version": "3.13.1"
     },
     {
-      "tag": "jammy-3.12.7",
+      "tag": "jammy-3.12.8",
       "aliases": "jammy-3.12",
       "base_image_repo": "ubuntu",
       "base_image_tag": "jammy",
       "base_image_digest": "sha256:0e5e4a57c2499249aafc3b40fcd541e9a456aab7296681a3994d631587203f97",
-      "python_version": "3.12.7"
+      "python_version": "3.12.8"
     },
     {
-      "tag": "jammy-3.11.10",
+      "tag": "jammy-3.11.11",
       "aliases": "jammy-3.11",
       "base_image_repo": "ubuntu",
       "base_image_tag": "jammy",
       "base_image_digest": "sha256:0e5e4a57c2499249aafc3b40fcd541e9a456aab7296681a3994d631587203f97",
-      "python_version": "3.11.10"
+      "python_version": "3.11.11"
     },
     {
-      "tag": "jammy-3.10.15",
+      "tag": "jammy-3.10.16",
       "aliases": "jammy-3.10",
       "base_image_repo": "ubuntu",
       "base_image_tag": "jammy",
       "base_image_digest": "sha256:0e5e4a57c2499249aafc3b40fcd541e9a456aab7296681a3994d631587203f97",
-      "python_version": "3.10.15"
+      "python_version": "3.10.16"
     },
     {
       "tag": "noble-3.14.0a2",
       "aliases": "3.14 3.14.0a2 noble-3.14",
       "base_image_repo": "ubuntu",
       "base_image_tag": "noble",
-      "base_image_digest": "sha256:278628f08d4979fb9af9ead44277dbc9c92c2465922310916ad0c46ec9999295",
+      "base_image_digest": "sha256:80dd3c3b9c6cecb9f1667e9290b3bc61b78c2678c02cbdae5f0fea92cc6734ab",
       "python_version": "3.14.0a2"
     },
     {
-      "tag": "noble-3.13.0",
-      "aliases": "3 3.13 3.13.0 latest noble-3 noble-3.13",
+      "tag": "noble-3.13.1",
+      "aliases": "3 3.13 3.13.1 latest noble-3 noble-3.13",
       "base_image_repo": "ubuntu",
       "base_image_tag": "noble",
-      "base_image_digest": "sha256:278628f08d4979fb9af9ead44277dbc9c92c2465922310916ad0c46ec9999295",
-      "python_version": "3.13.0"
+      "base_image_digest": "sha256:80dd3c3b9c6cecb9f1667e9290b3bc61b78c2678c02cbdae5f0fea92cc6734ab",
+      "python_version": "3.13.1"
     },
     {
-      "tag": "noble-3.12.7",
-      "aliases": "3.12 3.12.7 noble-3.12",
+      "tag": "noble-3.12.8",
+      "aliases": "3.12 3.12.8 noble-3.12",
       "base_image_repo": "ubuntu",
       "base_image_tag": "noble",
-      "base_image_digest": "sha256:278628f08d4979fb9af9ead44277dbc9c92c2465922310916ad0c46ec9999295",
-      "python_version": "3.12.7"
+      "base_image_digest": "sha256:80dd3c3b9c6cecb9f1667e9290b3bc61b78c2678c02cbdae5f0fea92cc6734ab",
+      "python_version": "3.12.8"
     },
     {
-      "tag": "noble-3.11.10",
-      "aliases": "3.11 3.11.10 noble-3.11",
+      "tag": "noble-3.11.11",
+      "aliases": "3.11 3.11.11 noble-3.11",
       "base_image_repo": "ubuntu",
       "base_image_tag": "noble",
-      "base_image_digest": "sha256:278628f08d4979fb9af9ead44277dbc9c92c2465922310916ad0c46ec9999295",
-      "python_version": "3.11.10"
+      "base_image_digest": "sha256:80dd3c3b9c6cecb9f1667e9290b3bc61b78c2678c02cbdae5f0fea92cc6734ab",
+      "python_version": "3.11.11"
     },
     {
-      "tag": "noble-3.10.15",
-      "aliases": "3.10 3.10.15 noble-3.10",
+      "tag": "noble-3.10.16",
+      "aliases": "3.10 3.10.16 noble-3.10",
       "base_image_repo": "ubuntu",
       "base_image_tag": "noble",
-      "base_image_digest": "sha256:278628f08d4979fb9af9ead44277dbc9c92c2465922310916ad0c46ec9999295",
-      "python_version": "3.10.15"
+      "base_image_digest": "sha256:80dd3c3b9c6cecb9f1667e9290b3bc61b78c2678c02cbdae5f0fea92cc6734ab",
+      "python_version": "3.10.16"
     }
   ]
 }
