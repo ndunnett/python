@@ -1,19 +1,19 @@
 {
   "include": [
     {
-      "tag": "jammy-3.14.0a7",
+      "tag": "jammy-3.14.0b1",
       "aliases": "jammy-3.14",
       "base_image_repo": "ubuntu",
       "base_image_tag": "jammy",
-      "base_image_digest": "sha256:d80997daaa3811b175119350d84305e1ec9129e1799bba0bd1e3120da3ff52c3",
-      "python_version": "3.14.0a7"
+      "base_image_digest": "sha256:67cadaff1dca187079fce41360d5a7eb6f7dcd3745e53c79ad5efd8563118240",
+      "python_version": "3.14.0b1"
     },
     {
       "tag": "jammy-3.13.3",
       "aliases": "jammy-3 jammy-3.13",
       "base_image_repo": "ubuntu",
       "base_image_tag": "jammy",
-      "base_image_digest": "sha256:d80997daaa3811b175119350d84305e1ec9129e1799bba0bd1e3120da3ff52c3",
+      "base_image_digest": "sha256:67cadaff1dca187079fce41360d5a7eb6f7dcd3745e53c79ad5efd8563118240",
       "python_version": "3.13.3"
     },
     {
@@ -21,7 +21,7 @@
       "aliases": "jammy-3.12",
       "base_image_repo": "ubuntu",
       "base_image_tag": "jammy",
-      "base_image_digest": "sha256:d80997daaa3811b175119350d84305e1ec9129e1799bba0bd1e3120da3ff52c3",
+      "base_image_digest": "sha256:67cadaff1dca187079fce41360d5a7eb6f7dcd3745e53c79ad5efd8563118240",
       "python_version": "3.12.10"
     },
     {
@@ -29,7 +29,7 @@
       "aliases": "jammy-3.11",
       "base_image_repo": "ubuntu",
       "base_image_tag": "jammy",
-      "base_image_digest": "sha256:d80997daaa3811b175119350d84305e1ec9129e1799bba0bd1e3120da3ff52c3",
+      "base_image_digest": "sha256:67cadaff1dca187079fce41360d5a7eb6f7dcd3745e53c79ad5efd8563118240",
       "python_version": "3.11.12"
     },
     {
@@ -37,23 +37,23 @@
       "aliases": "jammy-3.10",
       "base_image_repo": "ubuntu",
       "base_image_tag": "jammy",
-      "base_image_digest": "sha256:d80997daaa3811b175119350d84305e1ec9129e1799bba0bd1e3120da3ff52c3",
+      "base_image_digest": "sha256:67cadaff1dca187079fce41360d5a7eb6f7dcd3745e53c79ad5efd8563118240",
       "python_version": "3.10.17"
     },
     {
-      "tag": "noble-3.14.0a7",
-      "aliases": "3.14 3.14.0a7 noble-3.14",
+      "tag": "noble-3.14.0b1",
+      "aliases": "3.14 3.14.0b1 noble-3.14",
       "base_image_repo": "ubuntu",
       "base_image_tag": "noble",
-      "base_image_digest": "sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02",
-      "python_version": "3.14.0a7"
+      "base_image_digest": "sha256:6015f66923d7afbc53558d7ccffd325d43b4e249f41a6e93eef074c9505d2233",
+      "python_version": "3.14.0b1"
     },
     {
       "tag": "noble-3.13.3",
       "aliases": "3 3.13 3.13.3 latest noble-3 noble-3.13",
       "base_image_repo": "ubuntu",
       "base_image_tag": "noble",
-      "base_image_digest": "sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02",
+      "base_image_digest": "sha256:6015f66923d7afbc53558d7ccffd325d43b4e249f41a6e93eef074c9505d2233",
       "python_version": "3.13.3"
     },
     {
@@ -61,7 +61,7 @@
       "aliases": "3.12 3.12.10 noble-3.12",
       "base_image_repo": "ubuntu",
       "base_image_tag": "noble",
-      "base_image_digest": "sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02",
+      "base_image_digest": "sha256:6015f66923d7afbc53558d7ccffd325d43b4e249f41a6e93eef074c9505d2233",
       "python_version": "3.12.10"
     },
     {
@@ -69,7 +69,7 @@
       "aliases": "3.11 3.11.12 noble-3.11",
       "base_image_repo": "ubuntu",
       "base_image_tag": "noble",
-      "base_image_digest": "sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02",
+      "base_image_digest": "sha256:6015f66923d7afbc53558d7ccffd325d43b4e249f41a6e93eef074c9505d2233",
       "python_version": "3.11.12"
     },
     {
@@ -77,7 +77,7 @@
       "aliases": "3.10 3.10.17 noble-3.10",
       "base_image_repo": "ubuntu",
       "base_image_tag": "noble",
-      "base_image_digest": "sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02",
+      "base_image_digest": "sha256:6015f66923d7afbc53558d7ccffd325d43b4e249f41a6e93eef074c9505d2233",
       "python_version": "3.10.17"
     }
   ]
