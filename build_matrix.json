@@ -9,12 +9,12 @@
       "python_version": "3.14.0rc1"
     },
     {
-      "tag": "jammy-3.13.5",
+      "tag": "jammy-3.13.6",
       "aliases": "jammy-3 jammy-3.13",
       "base_image_repo": "ubuntu",
       "base_image_tag": "jammy",
       "base_image_digest": "sha256:1ec65b2719518e27d4d25f104d93f9fac60dc437f81452302406825c46fcc9cb",
-      "python_version": "3.13.5"
+      "python_version": "3.13.6"
     },
     {
       "tag": "jammy-3.12.11",
@@ -49,12 +49,12 @@
       "python_version": "3.14.0rc1"
     },
     {
-      "tag": "noble-3.13.5",
-      "aliases": "3 3.13 3.13.5 latest noble-3 noble-3.13",
+      "tag": "noble-3.13.6",
+      "aliases": "3 3.13 3.13.6 latest noble-3 noble-3.13",
       "base_image_repo": "ubuntu",
       "base_image_tag": "noble",
       "base_image_digest": "sha256:a08e551cb33850e4740772b38217fc1796a66da2506d312abe51acda354ff061",
-      "python_version": "3.13.5"
+      "python_version": "3.13.6"
     },
     {
       "tag": "noble-3.12.11",
